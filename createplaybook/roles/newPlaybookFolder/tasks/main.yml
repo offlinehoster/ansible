@@ -1,0 +1,30 @@
+---
+# tasks file for newPlaybookFolder
+- include_vars: "{{ item }}"
+  with_items:
+    - vars.yml
+
+- name: Show current playbooks
+  shell: ls {{ playbookdir }}
+  register: playbooklist
+
+- debug: msg={{ playbooklist }}
+
+- name: Create folders
+  file: state=directory path={{ item }}
+  with_items:
+    - "{{ playbookdir }}/{{ playbookname }}"
+    - "{{ playbookdir }}/{{ playbookname }}/roles"
+
+- name: Create files
+  file: state=touch path={{item}}
+  with_items:
+    - "{{ playbookdir }}/{{ playbookname }}/deploy.yml"
+    - "{{ playbookdir }}/{{ playbookname }}/vars.yml"
+    - "{{ playbookdir }}/{{ playbookname }}/hosts"
+
+- name: Create role
+  shell: 'ansible-galaxy {{ galaxy_type }} {{ rolename }} --init-path {{ playbookdir }}/{{ playbookname }}/roles/'
+
+- name: Add include_vars to new role
+  template: dest={{ playbookdir }}/{{ playbookname }}/roles/{{ rolename }}/tasks/main.yml src=includevars.j2

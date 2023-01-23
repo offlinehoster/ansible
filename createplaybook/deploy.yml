@@ -1,0 +1,17 @@
+---
+- name: Create a new playbook or edit an existing
+  hosts: 127.0.0.1
+  connection: local
+  roles:
+    - newPlaybookFolder
+
+  vars_prompt:
+    - name: "playbookname"
+      prompt: "Enter a new or existing playbookname"
+      private: no
+    - name: "galaxy_type"
+      prompt: "Install role from galaxy or initialize new local role"
+      private: no
+    - name: "rolename"
+      prompt: "Please enter a name for the new role"
+      private: no
